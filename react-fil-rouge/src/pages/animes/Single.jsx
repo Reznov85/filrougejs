@@ -25,12 +25,12 @@ const Single = () => {
    
     return (
         !loaded ? <h2>En cours de chargement</h2> : error ? <h2>Erreur : {error}</h2> :
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="w-3/4 mx-auto px-4 py-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="w-full bg-gray-50 dark:bg-gray-900">
+            <div className="w-5/6 mx-auto">
                 {data.map((anime) => (
                     <div key={anime.id} 
-                        className="max-w-sm w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                        <img className="rounded-t-lg w-full h-48 object-cover" src={anime.picture} alt={anime.titreOriginal}/>             
+                        className="w-full h-auto mx_auto bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                        <img className="rounded-t-lg w-full h-auto object-cover" src={anime.image[0].nom} alt={anime.titreOriginal}/>             
                         <div className="p-5">
                             <a href="#">
                                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

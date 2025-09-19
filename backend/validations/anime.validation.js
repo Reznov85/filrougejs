@@ -1,4 +1,3 @@
-import e from "express";
 import joi from "joi";
 
 export default function animeValidation(body){
@@ -9,10 +8,9 @@ export default function animeValidation(body){
       synopsis: joi.any().required(),
       nbSaison: joi.any(),
       nbEpisode: joi.any(),
-      studios: joi.any(),
+      studios: joi.array().items(joi.string().regex(/^[0-9a-fA-F]{24}$/)),
       note: joi.any(),
-      picture: joi.any(),
-      genres: joi.any(),
+      genres: joi.array().items(joi.string().regex(/^[0-9a-fA-F]{24}$/)),
       episodes: joi.any()
 
     })
@@ -26,13 +24,19 @@ export default function animeValidation(body){
       nbEpisode: joi.any(),
       studios: joi.any(),
       note: joi.any(),
-      picture: joi.any(),
       genres: joi.any(),
       episodes: joi.any()
     })
 
+     const animeaddOrRemoveImages = joi.object({
+      image: joi.array().items(joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+    })
+   
+
     return {
         animeCreate: animeCreate.validate(body),
         animeUpdate: animeUpdate.validate(body),
+        animeAddOrRemoveImages: animeaddOrRemoveImages.validate(body),
+
     }
 }

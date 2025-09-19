@@ -26,8 +26,9 @@ const animeSchema = new mongoose.Schema({
       type: Number,
       nullable: true
     },
-    picture: [{
-      type: String,
+    image: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Image",
       nullable: true
     }],
     episodes: [{

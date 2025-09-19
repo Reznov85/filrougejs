@@ -1,6 +1,7 @@
 
 import { Router } from "express";
 import { createStudio, getAllStudios, getStudioById, updateStudio, deleteStudio } from "../controllers/studio.controller.js"
+import { addImages } from "../controllers/anime.controller.js";
 
 const studioRoute= Router()
 
