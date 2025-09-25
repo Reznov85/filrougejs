@@ -10,15 +10,24 @@ const FormAnime = () => {
     nbSaison: '',
     nbEpisode: '',
     note: '',
-    genres: [],  // backend attend un tableau d'ObjectId
-    studios: [], // idem (1 seul choisi -> [id])
+    genres: [], 
+    studios: [], 
   });
+
 
   const [message, setMessage] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [studios, setStudios] = useState([]);
   const [genres, setGenres] = useState([]);
+  const token = localStorage.getItem('token')
+
+  
+    const header = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
 
   // -- Helpers de saisie
   const handleChange = (e) => {
@@ -44,8 +53,8 @@ const FormAnime = () => {
     (async () => {
       try {
         const [sRes, gRes] = await Promise.all([
-          axios.get('http://localhost:3000/studio/all'),
-          axios.get('http://localhost:3000/genre/all'),
+          axios.get('http://localhost:3000/studio/all', header),
+          axios.get('http://localhost:3000/genre/all', header),
         ]);
         setStudios(Array.isArray(sRes.data) ? sRes.data : []);
         setGenres(Array.isArray(gRes.data) ? gRes.data : []);
@@ -67,7 +76,7 @@ const FormAnime = () => {
     if (!payload.genres?.length) delete payload.genres;
 
     try {
-      const res = await axios.post('http://localhost:3000/anime/new', payload);
+      const res = await axios.post('http://localhost:3000/anime/new', payload, header);
       console.log(res.data);
       setMessage("Animé créé avec succès");
       // Optionnel: reset du formulaire

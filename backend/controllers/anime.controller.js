@@ -22,7 +22,7 @@ const createAnime = async (req, res) => {
 
 const getAllAnimes = async (req, res) => {
   try {
-    const animes = await Anime.find().populate("image").lean();
+    const animes = await Anime.find().populate("image").populate("genres", "nom").populate("studios", "nom");
     return res.status(200).json(animes);
   } catch (error) {
     console.log(error);
@@ -32,7 +32,7 @@ const getAllAnimes = async (req, res) => {
 
 const getAnimeById = async (req, res) => {
   try {
-    const anime = await Anime.findById(req.params.id).populate("image");
+    const anime = await Anime.findById(req.params.id).populate("image").populate("genres", "nom").populate("studios", "nom")
     if (!anime) return res.status(404).json({ message: "L'animé n'existe pas" });
     return res.status(200).json(anime);
   } catch (error) {
@@ -96,17 +96,27 @@ const addImages = async (req, res) => {
       return res.status(400).json({ message: "Le champ 'image' doit être un tableau non vide." });
     }
 
-    // 3) (Optionnel) Validation Joi si tu l’as
-    // const { error } = animeValidation({ image }).animeAddOrRemoveImages;
-    // if (error) return res.status(400).json({ message: error.details?.[0]?.message });
 
-    // 4) Vérifier l’existence des IDs Image
-    const found = await Image.find({ _id: { $in: image } }).select("_id").lean();
-    const foundIds = new Set(found.map(d => String(d._id)));
-    const missing = image.filter(x => !foundIds.has(String(x)));
-    if (missing.length > 0) {
-      return res.status(404).json({ message: `Image(s) inexistante(s) : ${missing.join(", ")}` });
-    }
+   // 4) Vérifier l’existence des IDs Image
+// On suppose que "image" est un tableau d'identifiants (envoyés par le client)
+const found = await Image.find({ _id: { $in: image } }) 
+  .select("_id")    // on ne récupère que le champ _id
+  .lean();          // .lean() renvoie des objets JS simples (plus léger que des documents Mongoose)
+
+// On crée un Set contenant tous les _id trouvés en BDD (convertis en string)
+const foundIds = new Set(found.map(d => String(d._id)));
+
+// On compare la liste envoyée par le client ("image")
+// avec celle trouvée en base ("foundIds")
+// → tous les IDs qui ne sont pas présents en base seront placés dans "missing"
+const missing = image.filter(x => !foundIds.has(String(x)));
+
+// Si certains IDs n'existent pas, on renvoie une erreur 404 avec la liste des IDs manquants
+if (missing.length > 0) {
+  return res.status(404).json({ 
+    message: `Image(s) inexistante(s) : ${missing.join(", ")}` 
+  });
+}
 
     // 5) Ajout sans doublons dans le champ 'image' (singulier dans ton modèle)
     const updatedAnime = await Anime.findByIdAndUpdate(
@@ -155,6 +165,28 @@ const removeImages = async (req, res) => {
   }
 };
 
+const getLastAnimes = async (req, res) => {
+ try {
+    const animes = await Anime.find().sort({createdAt: -1}).limit(5).populate("image");
+    return res.status(200).json(animes);
+    } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server Erreur serveur", error });
+
+  }
+};
+
+const getBestAnimes = async (req, res) => {
+  try {
+    const animes = await Anime.find().sort({ note: -1}).limit(5).populate("image");    
+  } catch (error) {
+        console.log(error);
+    return res.status(500).json({ message: "Server Erreur serveur", error });
+    
+  }
+}
+
+
 export {
   createAnime,
   getAllAnimes,
@@ -163,4 +195,7 @@ export {
   deleteAnime,
   addImages,
   removeImages,
+  getLastAnimes,
+  getBestAnimes
+
 };

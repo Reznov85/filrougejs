@@ -9,7 +9,10 @@ import UserList from './pages/Admin/UserList.jsx'
 import FormAnime from './pages/Admin/FormAnime.jsx'
 import Bibliotheque from './pages/Admin/Biblio.jsx'
 import FormImage from './pages/Admin/FormImage.jsx'
-import ImageAnime from './pages/Admin/AjoutImageAnime.jsx'
+import ImageAnime from "./pages/Admin/AjoutImageAnime.jsx"
+import FormStudio from './pages/Admin/FormStudio.jsx'
+import Profile from './pages/profil.jsx'
+import FormGenre from './pages/Admin/FormGenre.jsx'
 
 function App() {
   return (
@@ -18,13 +21,20 @@ function App() {
         <Route path="/" element={<Home/>} />
         <Route path="/anime" element={<AnimeList/>}/>
         <Route path="/anime/:id" element={<Single/>}/>
+        <Route path="/anime/new" element={<FormAnime/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/users" element={<UserList/>}/>
-        <Route path="/anime/new" element={<FormAnime/>}/>
         <Route path="/bibliotheque" element={<Bibliotheque/>}/>
         <Route path="/image/new" element={<FormImage/>}/>
         <Route path="/anime/addimage/:id" element={<ImageAnime/>}/>
+        <Route path="/studio/new" element={<FormStudio/>}/>
+        <Route path="/genre/new" element={<FormGenre/>}/>
+        <Route path="/profil" element={<Profile/>}/>
+
+
+
+
       </Routes>
     </BrowserRouter>
   )

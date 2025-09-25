@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 
 #navbar{
@@ -7,4 +9,12 @@
 
 body{
     background-color: #6D28D9
+}
+
+h2{
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    margin-left: 1%;
+
 }

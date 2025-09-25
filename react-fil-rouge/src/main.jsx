@@ -4,10 +4,12 @@ import './index.css'
 import 'flowbite'
 import App from './App.jsx'
 import Header from './components/header.jsx'
+import Footer from './components/Footer.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
      <Header/>
     <App/>
+    <Footer/>
   </StrictMode>,
 )

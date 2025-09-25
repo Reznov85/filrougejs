@@ -6,9 +6,16 @@ const Bibliotheque = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setErreur] = useState(null);
+  const token = localStorage.getItem('token')
+
+   const header = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
 
   useEffect(() => {
-    axios.get('http://localhost:3000/image/all')
+    axios.get('http://localhost:3000/image/all', header)
       .then(res => {
         setImages(res.data || []);
         setLoading(false);
@@ -20,7 +27,7 @@ const Bibliotheque = () => {
   }, []);
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/image/${id}`)
+    axios.delete(`http://localhost:3000/image/${id}`, header)
       .then(() => {
         setImages(images.filter(img => img._id !== id));
       })

@@ -4,6 +4,7 @@ import { initFlowbite } from 'flowbite';
 
 const Home = () => {
   const [data, setData] = useState([]);
+  const [last, setLast] = useState([])
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,20 +19,30 @@ const Home = () => {
     if (loaded && !error && data.length) {
       initFlowbite();
     }
-  }, [loaded, error]); // <- pas "data" ici
+  }, [loaded, error]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/anime/last/list')
+ .then(res => { setData(res.data || []); setLoaded(true); })
+      .catch(err => { setError(err.message || 'Erreur'); setLoaded(true); });
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/anime/top/list')
+    .then(res => { setData(res.data || []); setLoaded(tr)})
+     .catch(err => { setError(err.message || 'Erreur'); setLoaded(true); });
+  }, []);
+  
 
   if (!loaded) return <h2>En cours de chargement</h2>;
   if (error) return <h2>Erreur : {error}</h2>;
   if (!data.length) return <h2>Aucun animé trouvé</h2>;
+  
 
   return (
+    <>
     <section>
-      <div
-        id="default-carousel"
-        className="relative w-full"
-        data-carousel="slide"
-        data-carousel-interval="12000"
-      >
+      <div id="default-carousel" className="relative w-full" data-carousel="slide" data-carousel-interval="3000">
         <div className="relative h-150 overflow-hidden rounded-lg">
           {data.map((anime, index) => {
             const file = anime?.image?.[0]?.nom;
@@ -43,7 +54,7 @@ const Home = () => {
               <div
                 key={anime._id || index}
                 data-carousel-item={index === 0 ? 'active' : ''}
-                className="duration-700 ease-in-out"
+                className="duration-1500 ease-in-out"
               >
                 {src && (
                   <img
@@ -109,7 +120,75 @@ const Home = () => {
         </button>
       </div>
     </section>
-  );
-};
+    <section>
+  <h2 className=''>Nouveautés</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+    {data.map((anime, index) => (
+    <div
+      key={anime._id}
+      className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"
+    >
+      <a href={`/anime/${anime._id}`}>
+        {anime.image.length > 0 && (
+          <img
+            className="rounded-t w-full h-60 object-cover"
+            src={anime.image[0].nom}
+            alt={anime.titreFr}
+          />
+        )}
+        <div className="p-5">
+          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {anime.titreFr}
+          </h5>
+          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            {anime.synopsis?.substring(0, 120)}...
+          </p>
+        </div>
+      </a>
+    </div>
+  ))}
+      </div>
+</section>
+ <section>
+  <h2 className=''>Mieux notés</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+    {data.map((top, index) => (
+      <div
+        key={index}
+        className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"
+      >
+        <a href={'/anime/'+top._id}>
+            {top.image.map(img => (
+          <img className="rounded-t w-full" src={img.nom} alt={last.titreFr}  />
+          ))}
+        </a>
+        <div className="p-5">
+          <a href="#">
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {top.titreFr}
+            </h5>
+          </a>
+          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            {top.synopsis?.substring(0, 120)}...
+          </p>
+      
+           
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+
+    
+
+
+
+    </>
+
+
+    
+  )
+}
 
 export default Home;

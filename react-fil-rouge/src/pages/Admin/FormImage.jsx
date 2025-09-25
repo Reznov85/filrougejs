@@ -2,26 +2,55 @@ import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+
 export default function FormImage() {
   const [alt, setAlt] = useState("")
   const [nom, setNom] = useState(null)
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    let formData = new FormData()
-    formData.append("alt", alt)
-    formData.append("nom", nom)
-
-    const config = { headers: { "Content-Type": "multipart/form-data" } }
-    try {
-      await axios.post("http://localhost:3000/image/new", formData, config)
-      navigate("/")
-    } catch (err) {
-      setError(err.response?.data?.message || "Erreur lors de l’upload")
-    }
+  async function handleSubmit(e){
+        e.preventDefault()
+       // Petites validations côté client
+  if (!alt || !alt.trim()) {
+    setError("Le descriptif (alt) est requis.");
+    return;
   }
+  if (!nom) {
+    setError("Veuillez sélectionner un fichier.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("alt", alt);
+  formData.append("nom", nom); // Assure-toi que Multer attend bien "nom" côté backend
+
+  try {
+    const token = localStorage.getItem("token") || "";
+    const res = await axios.post(
+      "http://localhost:3000/image/new",
+      formData,
+      {
+        // Laisse axios gérer le boundary de multipart; inutile de mettre Content-Type
+        headers: {
+          Authorization: token ? `Bearer ${token}` : undefined,
+        },
+      }
+    );
+
+    console.log("Upload OK:", res.data);
+    setError(null);
+    navigate("/bibliotheque");
+  } catch (err) {
+    // Transforme l’erreur en texte pour ne pas casser <p>
+    const msg =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Une erreur est survenue lors de l’envoi du formulaire.";
+    setError(msg);
+    console.error(err);
+  }
+}
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-purple-700">
@@ -33,11 +62,7 @@ export default function FormImage() {
           Ajouter une image
         </h2>
 
-        {error && (
-          <p className="text-red-600 text-sm bg-red-100 p-2 rounded-lg">
-            {error}
-          </p>
-        )}
+     {error && <p>{error.message || error}</p>}
 
         {/* Champ descriptif */}
         <div>
@@ -75,8 +100,7 @@ export default function FormImage() {
         </div>
 
         {/* Bouton */}
-        <button
-          type="submit"
+        <button type="submit"
           className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-purple-800 transition duration-200"
         >
           Enregistrer

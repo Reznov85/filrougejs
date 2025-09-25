@@ -1,18 +1,15 @@
-// middlewares/auth.js
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken"
 
-export default function auth(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Non authentifié." });
-  }
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const payload = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = payload; // { id, email, role, iat, exp }
-    return next();
-  } catch (e) {
-    return res.status(401).json({ message: "Token invalide ou expiré." });
-  }
-}
+const auth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: "Token manquant" });
+    }
+    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+        if (err) return res.status(403).json({ message: "Token invalide" });
+        req.user = user;
+        next();
+    });
+};
+export default auth;
