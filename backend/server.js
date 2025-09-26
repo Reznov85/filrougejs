@@ -11,6 +11,7 @@ import genreRoute from "./routes/genre.route.js";
 import episodeRoute from "./routes/episode.route.js";
 import db from "./db/db.js";
 import imageRoute from "./routes/filesRoute.js";
+import noteRoute from "./routes/note.route.js";
 
 db()
 const __filename = fileURLToPath(import.meta.url);
@@ -50,6 +51,7 @@ app.use("/studio", studioRoute);
 app.use("/genre", genreRoute);
 app.use("/episode", episodeRoute);
 app.use("/image", imageRoute);
+app.use("/rating", noteRoute);
 
 
 

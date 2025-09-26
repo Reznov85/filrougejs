@@ -4,7 +4,7 @@
 
 
 #navbar{
-    background-color: #220459;
+    background-color: #350653;
 }
 
 body{
@@ -18,3 +18,14 @@ h2{
     margin-left: 1%;
 
 }
+
+  .card {
+   
+  
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }

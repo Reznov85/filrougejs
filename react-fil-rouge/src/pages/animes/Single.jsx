@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import RatingWidget from "../../components/noteWidget.jsx";
 
 const Single = () => {
   const { id } = useParams();
@@ -178,6 +179,10 @@ const Single = () => {
                 )}
               </div>
             </div>
+            <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Notation</h3>
+        <RatingWidget animeId={id} />
+      </div>
 
             {/* --- Formulaire commentaire --- */}
             <form

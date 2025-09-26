@@ -22,10 +22,10 @@ const animeSchema = new mongoose.Schema({
     nbEpisode: {
       type: Number
     },
-    note: {
-      type: Number,
-      nullable: true
-    },
+    ratingAvg: { type: Number, default: 0 },
+    
+    ratingCount: { type: Number, default: 0 },
+    
     image: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Image",

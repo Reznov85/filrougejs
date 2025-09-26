@@ -32,7 +32,7 @@ const AnimeList = () => {
             <div className="max-w-12xl mx-auto px-4 py-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {data.map((anime) => (
               
-        <div key={anime.id} className="max-w-sm w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <div key={anime.id} className="max-w-sm w-full card bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <div className="p-5">
           <a href={`/anime/${anime._id}`}>
           {anime.image.length > 0 && (
